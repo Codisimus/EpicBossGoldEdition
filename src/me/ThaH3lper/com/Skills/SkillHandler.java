@@ -52,13 +52,13 @@ public class SkillHandler {
 			ExecuteSkill(l, line, p);
 		}
 	}
-	
+
 	public static void ExecutePackSkills(List<String> list, LivingEntity l, Player p)
 	{
 		List<String> DelayedSkills = new ArrayList<String>();
 		boolean delayrest = false;
 		int delayamount = 0;
-		
+
 		for(String line : list)
 		{
 			if(delayrest == false)	{
@@ -69,19 +69,19 @@ public class SkillHandler {
 					continue;
 				} else	{
 					ExecuteSkill(l, line, p);
-				}				
+				}
 			} else	{
 				DelayedSkills.add(line);
 			}
 		}
-		
+
 		if(delayrest == true)	{
 			DelayedSkill ds = new DelayedSkill(DelayedSkills, l, p);
 			Bukkit.getScheduler().scheduleSyncDelayedTask(EpicBoss.plugin, ds, delayamount);
 		}
-		
+
 	}
-	
+
 	public static void ExecuteSkill(LivingEntity l, String skill, Player p)
 	{
 		String[] split = skill.split(" ");
@@ -147,18 +147,18 @@ public class SkillHandler {
 				SkillCustom.ExecuteCustom(l, skill, p);
 		}
 	}
-	
+
 	public static List<Player> getRadious(LivingEntity l, int i)
 	{
 		List<Player> list = new ArrayList<Player>();
 		for(Player p : l.getWorld().getPlayers())
 		{
-			if(l.getLocation().distance(p.getLocation()) < i)
+			if(l.getLocation().distanceSquared(p.getLocation()) < Math.pow(i, 2))
 				list.add(p);
 		}
 		return list;
 	}
-	
+
 	public static boolean CheckHealth(String health, LivingEntity l, String full)
 	{
 		if(health.contains(">"))
@@ -183,7 +183,7 @@ public class SkillHandler {
 			health = health.replace("<", "");
 			double hp = Double.parseDouble(health);
 			if(l.getHealth() < hp)
-				return true;	
+				return true;
 		}
 		else if(health.contains("-"))
 		{
@@ -195,7 +195,7 @@ public class SkillHandler {
 		}
 		return false;
 	}
-	
+
 	public static boolean hasUsed(String full, LivingEntity l)
 	{
 		List<MetadataValue> list = l.getMetadata(full);
@@ -206,37 +206,37 @@ public class SkillHandler {
 		}
 		return false;
 	}
-	
-	private static class DelayedSkill implements Runnable { 
+
+	private static class DelayedSkill implements Runnable {
 		private List<String> list;
 		private LivingEntity boss;
 		private Player player;
 		private boolean cancelled;
-		
+
 		public DelayedSkill(List<String> list, LivingEntity l, Player p)	{
 			this.list = list;
 			this.boss = l;
 			this.player = p;
 			this.cancelled = false;
 		}
-		
+
 		public void cancel() {
 			this.list = null;
 			this.cancelled = true;
 		}
-		
+
 		@Override
         public void run() {
 			if (!cancelled) {
 				if (this.boss.isValid()) {
-					
+
 					EpicMobs em = MobCommon.getEpicMob(this.boss);
-					
+
 					if(em.targetChanger != null)	{
 						this.player = em.targetChanger;
 						em.targetChanger = null;
 					}
-					
+
 					if(this.player != null && this.player.isValid())	{
 						ExecutePackSkills(this.list, this.boss, this.player);
 						return;
@@ -247,9 +247,9 @@ public class SkillHandler {
 								ExecutePackSkills(this.list, this.boss, this.player);
 								return;
 							}
-						} 
+						}
 						List<Entity> list = this.boss.getNearbyEntities(16, 8, 16);
-						
+
 						for(Entity e : list)	{
 							if(e instanceof Player)	{
 								if(this.boss instanceof Creature) ((Creature)this.boss).setTarget((LivingEntity)e);
