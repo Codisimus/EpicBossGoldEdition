@@ -28,34 +28,10 @@ public class SignPlace implements Listener{
 			{
 				if(e.getPlayer().hasPermission("epicboss.admin") || e.getPlayer().hasPermission("epicboss.timer"))
 				{
-					EpicBoss.plugin.allTimers.add(new Timer(e.getBlock().getLocation(), et, el, e.getLines()));
+					EpicBoss.plugin.allTimers.add(new Timer(et, el));
 					e.getPlayer().sendMessage(ChatColor.GREEN + "Timer Created!");
+                                        e.getBlock().setType(Material.AIR);
 				}
-			}
-		}
-	}
-	
-	@EventHandler(priority = EventPriority.HIGH)
-	public void RemoveTimer(BlockBreakEvent e)
-	{
-		if(e.getBlock().getType() == Material.SIGN_POST || e.getBlock().getType() == Material.WALL_SIGN)
-		{
-			Timer timer = null;
-			for(Timer t : EpicBoss.plugin.allTimers)
-			{
-				if(t.loc.equals(e.getBlock().getLocation()))
-					timer = t;
-					
-			}
-			if(timer != null)
-			{
-				if(e.getPlayer().hasPermission("epicboss.admin") || e.getPlayer().hasPermission("epicboss.timer"))
-				{
-					EpicBoss.plugin.allTimers.remove(timer);
-					e.getPlayer().sendMessage(ChatColor.RED + "Timer Removed!");
-				}
-				else
-					e.setCancelled(true);
 			}
 		}
 	}

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.ThaH3lper.com.EpicBoss;
-import me.ThaH3lper.com.Libs.AttributeHandler;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -22,36 +21,30 @@ public class ItemHandler {
 		int id = ei.id;
 		short data = (short) ei.data;
 		int amount = ei.amount;
-		
+
 		ItemStack stack = new ItemStack(Material.getMaterial(id), amount, data);
 		ItemMeta im = stack.getItemMeta();
-		
+
 		if(ei.Lores != null)
 			im = setLores(im, ei.Lores);
-		
+
 		if(ei.Enchants != null)
 			im = setEnchants(im, ei.Enchants);
-		
+
 		if(ei.Display != null)
 			im = setDisplay(im, ei.Display);
-		
+
 		stack.setItemMeta(im);
-		
+
 		if(ei.color != null)
 			stack = setLeatherColor(stack, ei);
-		
+
 		if(ei.player != null)
 			stack = setPlayerName(stack, ei);
-		
-		stack = AttributeHandler.addHealth(stack, ei.health);
-		stack = AttributeHandler.addDamage(stack, ei.damage);
-		stack = AttributeHandler.addSpeed(stack, ei.speed);
-		stack = AttributeHandler.addKnockBackRes(stack, ei.knock);
-		stack = AttributeHandler.addFollowRange(stack, ei.range);
-		
+
 		return stack;
 	}
-	
+
 	public static ItemMeta setEnchants(ItemMeta im, List<String> enchants)
 	{
 		for(String s: enchants)
@@ -75,7 +68,7 @@ public class ItemHandler {
 		im.setLore(list);
 		return im;
 	}
-	
+
 	public static ItemMeta setDisplay(ItemMeta im, String s)
 	{
 

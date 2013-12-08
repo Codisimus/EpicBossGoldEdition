@@ -1,7 +1,6 @@
 package me.ThaH3lper.com.Mobs;
 
 import me.ThaH3lper.com.EpicBoss;
-import me.ThaH3lper.com.Libs.MobAttribute;
 import me.ThaH3lper.com.Skills.SkillHandler;
 
 import org.bukkit.ChatColor;
@@ -38,7 +37,7 @@ public class MobHandler {
 		}
 		return null;
 	}
-	
+
 	public static LivingEntity SpawnEpicMobList(EpicMobsList el, Location loc)
 	{
 		String[] part = el.bosslist.split(",");
@@ -62,62 +61,40 @@ public class MobHandler {
 		LivingEntity l = AllMobs.spawnMob(em.Mobtype, loc);
 		l = setDisplay(em, l);
 		l = MobCommon.setMeta(l, em.cmdName, "cmdname");
-		
+
 		if(!em.despawn)
 			l.setRemoveWhenFarAway(false);
-		
+
 		//Set Size of slimes and MagmaCube
 		if(l instanceof Slime && em.size != 0)
-			((Slime) l).setSize(em.size);		
+			((Slime) l).setSize(em.size);
 		if(l instanceof MagmaCube && em.size != 0)
 			((MagmaCube) l).setSize(em.size);
-		
+
 		//set color of wolf and sheep
 		if(l instanceof Wolf || l instanceof Sheep)
 			l = setColor(l, em);
-		
+
 		//set osolot type
 		if(l instanceof Ocelot)
 			l = setOcolot(l, em);
-		
+
 		//set horse type
 		if(l instanceof Horse)
 			l = setHorse(l, em);
-		
+
 		//set villager type
 		if(l instanceof Villager)
 			l = setVillager(l, em);
-		
+
 		//setEquipment
 		MobCommon.setEquipment(l, em);
-		
-		MobAttribute.setAttackDamage(l, em.damage);	
-		
-		MobAttribute.setMaxHealth(l, em.health);
-		
-		if(em.speed != 0)
-		{
-			if(em.follow == -1)
-				MobAttribute.setMobSpeed(l, 0);
-			else
-				MobAttribute.setMobSpeed(l, em.speed);
-		}
-		
-		if(em.follow != 0)
-		{
-			if(em.follow == -1)
-				MobAttribute.setFollowRange(l, 0);
-			else
-				MobAttribute.setFollowRange(l, em.follow);
-		}
-		
-		MobAttribute.setKnockBackResistance(l, em.knock);
-		
+
 		EpicBoss.plugin.allMobs.add(l.getUniqueId());
 		SkillHandler.ExecuteSkills(em.skills, l, null);
-		return l;		
+		return l;
 	}
-	
+
 	public static LivingEntity setDisplay(EpicMobs em, LivingEntity l)
 	{
 		String s = em.Display;
@@ -126,7 +103,7 @@ public class MobHandler {
 		l.setCustomNameVisible(true);
 		return l;
 	}
-	
+
 	public static LivingEntity setColor(LivingEntity l, EpicMobs em)
 	{
 		if(l instanceof Wolf)

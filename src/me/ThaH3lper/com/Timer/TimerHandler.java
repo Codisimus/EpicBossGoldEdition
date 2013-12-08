@@ -4,10 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Sign;
 import org.bukkit.entity.LivingEntity;
 
 import me.ThaH3lper.com.EpicBoss;
@@ -27,7 +23,7 @@ public class TimerHandler {
 		}
 		return list;
 	}
-	
+
 	public static EpicTimer getEpicTimer(String s)
 	{
 		for(EpicTimer et : EpicBoss.plugin.listTimers)
@@ -37,14 +33,16 @@ public class TimerHandler {
 		}
 		return null;
 	}
-	
+
 	public static void SaveAllTimers()
 	{
 		List<String> save = new ArrayList<String>();
 		for(Timer t : EpicBoss.plugin.allTimers)
 		{
-			//Location
-			String loc = t.loc.getWorld().getName() + "," + t.loc.getX() + "," + t.loc.getY() + "," + t.loc.getZ();
+                        //EpicTimer
+                        String epicTimer = t.et.cmdName;
+                        //EpicLocation
+                        String epicLocation = t.el.name;
 			//Time
 			String time = t.clock + "";
 			//Mobs
@@ -53,13 +51,13 @@ public class TimerHandler {
 				mobs += c + ",";
 			if(mobs.equals(""))
 				mobs = "null";
-		
-			save.add(loc + ":" + time + ":" + mobs);
+
+			save.add(epicTimer + "," + epicLocation + ":" + time + ":" + mobs);
 		}
 		EpicBoss.plugin.savelist.getCustomConfig().set("Timers", save);
 		EpicBoss.plugin.savelist.saveCustomConfig();
 	}
-	
+
 	public static void LoadAllTimers()
 	{
 		List<String> list = EpicBoss.plugin.savelist.getCustomConfig().getStringList("Timers");
@@ -68,13 +66,17 @@ public class TimerHandler {
 		for(String s : list)
 		{
 			String[] parts = s.split(":");
-			//Location
-			String[] data = parts[0].split(",");
-			Location loc = new Location(Bukkit.getWorld(data[0]), Double.parseDouble(data[1]), Double.parseDouble(data[2]), Double.parseDouble(data[3]));
-			
+                        String[] split = parts[0].split(",");
+
+			//EpicTimer
+                        EpicTimer et = TimerHandler.getEpicTimer(split[0]);
+
+                        //EpicLocation
+                        EpicLocation el = LocationHandler.getEpicLocation(split[1]);
+
 			//Time
 			int time = Integer.parseInt(parts[1]);
-			
+
 			//Mob
 			List<UUID> mobslist = new ArrayList<UUID>();
 			String[] mobs = parts[2].split(",");
@@ -92,19 +94,11 @@ public class TimerHandler {
 					}
 				}
 			}
-			
-			if(loc.getBlock().getType() == Material.WALL_SIGN || loc.getBlock().getType() == Material.SIGN_POST)
-			{
-				Sign sign = (Sign) loc.getBlock().getState();
-				EpicTimer et = TimerHandler.getEpicTimer(sign.getLine(1));
-				EpicLocation el = LocationHandler.getEpicLocation(sign.getLine(2));
-				
-				Timer t = new Timer(loc, et, el, sign.getLines());
-				t.clock = time;
-				t.mobs = mobslist;
-				EpicBoss.plugin.allTimers.add(t);
-			}
-			
+
+                        Timer t = new Timer(et, el);
+                        t.clock = time;
+                        t.mobs = mobslist;
+                        EpicBoss.plugin.allTimers.add(t);
 		}
 	}
 }
